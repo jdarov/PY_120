@@ -7,6 +7,7 @@ class Car:
     def __init__(self, model, model_year, color):
         self._model = model
         self._model_year = model_year
+        self._color = None
         self.color = color
         self._speed = Car.DEFAULT_SPEED
     
@@ -45,16 +46,15 @@ class Car:
         if not isinstance(new_color, str):
             raise ValueError('Color must be a word')
         self._color = new_color
-
-    def spray_color_of_car(self, spray_color):
-        self.color = spray_color
+    @staticmethod
+    def spray_color_of_car(spray_color):
         print(f'The new paint job {spray_color} looks great!')
-    @classmethod
-    def gas_mileage(cls, miles_driven=100, fuel_burned=5):
-        cls.DISTANCE_TRAVELED = miles_driven
-        cls.FUEL_BURNED = fuel_burned
-        gas_miles = cls.DISTANCE_TRAVELED/cls.FUEL_BURNED
-        return gas_miles
+    @staticmethod
+    def gas_mileage(miles_driven=100, fuel_burned=5):
+        return miles_driven/fuel_burned
+    
+    def __str__(self):
+        return self.car_name
 
 ferrari = Car('ferrari', 2025, 'red')
 ferrari.engine_on()
@@ -75,4 +75,8 @@ ferrari.spray_color_of_car('green')
 print(ferrari.gas_mileage())
 
 corvette = Car('corvette', 2011, 'blue')
-print(corvette.gas_mileage(120, 10))
+print(corvette.gas_mileage(120, 2))
+
+print(ferrari)
+ferrari.color = 'red'
+print(ferrari)
