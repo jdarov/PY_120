@@ -162,7 +162,7 @@ class RPSGame(RulesMixIN):
         - Says goodbye when the player exits.
         """
         self._display_welcome_message()
-        self._display_rules()
+        self.display_rules()
 
         self._choose_computer_strategy()
         print(f'You are playing against {self._computer.strategy}')
