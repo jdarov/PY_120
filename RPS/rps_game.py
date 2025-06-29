@@ -12,6 +12,12 @@ import os
 import time
 from rps import Computer, Human
 
+GRAND_WINNER = "You are the GRAND WINNER! Congratulations!"
+GRAND_LOSER = "The computer is the GRAND WINNER! Better luck next time!"
+FINAL_SCORE = 5  # The score needed to win the game
+
+COMPUTER_STRATEGIES = ['random', 'r2d2', 'hal', 'daneel']
+
 class RPSGame:
 
     """
@@ -24,12 +30,6 @@ class RPSGame:
     - Trigger player move selection.
     - Display the outcome of the match.
     """
-    GRAND_WINNER = "You are the GRAND WINNER! Congratulations!"
-    GRAND_LOSER = "The computer is the GRAND WINNER! Better luck next time!"
-    FINAL_SCORE = 5  # The score needed to win the game
-
-    COMPUTER_STRATEGIES = ['random', 'r2d2', 'hal', 'daneel']
-
     def __init__(self):
         self._human = Human()
         self._computer = Computer()
@@ -37,9 +37,14 @@ class RPSGame:
         self._human_score = 0
         self._computer_score = 0
 
-        self._saved_moves = {}
+        self._saved_moves = []
 
-    def _point_to_prompt(self, message):
+    @staticmethod
+    def point_to_prompt(message):
+        """
+        Formats a message to be displayed in the console.
+        Prints ==> before the message
+        """
         return '==> ' + message
 
     def _display_welcome_message(self):
@@ -56,13 +61,13 @@ class RPSGame:
         print(f'The computer chose: {computer_move.name.upper()}')
 
         if human_move == computer_move:
-            print(self._point_to_prompt("It's a tie! Well, that's lame. Try again?"))
+            print(self.point_to_prompt ("It's a tie! Well, that's lame. Try again?"))
             return 'tie'
         if human_move.beats(computer_move):
-            print(self._point_to_prompt("You WON! Congratulations!"))
+            print(self.point_to_prompt ("You WON! Congratulations!"))
             self._human_score += 1
             return 'win'
-        print(self._point_to_prompt("You are a LOSER! Better luck next time!"))
+        print(self.point_to_prompt ("You are a LOSER! Better luck next time!"))
         self._computer_score += 1
         return 'lose'
 
@@ -78,17 +83,17 @@ class RPSGame:
         Checks if there is a grand winner based on the scores.
         If one player has a score of 3, they are declared the grand winner.
         """
-        if self._human_score >= RPSGame.FINAL_SCORE:
-            print('=' * 40)
-            print(self._point_to_prompt(RPSGame.GRAND_WINNER))
-            print('=' * 40)
-            print("You have won 3 rounds! Resetting scores...")
+        if self._human_score >= FINAL_SCORE:
+            print('+=' + '=' * len(GRAND_WINNER) + '=+')
+            print(self.point_to_prompt(GRAND_WINNER))
+            print('+=' + '=' * len(GRAND_WINNER) + '=+')
+            print(f"You have won {FINAL_SCORE} rounds! Resetting scores...")
             self._reset_scores()
-        elif self._computer_score >= RPSGame.FINAL_SCORE:
-            print('=' * 40)
-            print(self._point_to_prompt(RPSGame.GRAND_LOSER))
-            print('=' * 40)
-            print("The computer has won 3 rounds! Resetting scores...")
+        elif self._computer_score >= FINAL_SCORE:
+            print('+=' + '=' * len(GRAND_LOSER) + '=+')
+            print(self.point_to_prompt (GRAND_LOSER))
+            print('+=' + '=' * len(GRAND_LOSER) + '=+')
+            print(f"The computer has won {FINAL_SCORE} rounds! Resetting scores...")
             self._reset_scores()
 
     def _reset_scores(self):
@@ -107,21 +112,23 @@ class RPSGame:
             bool: True if the user wants to play again (input starts with 'y'),
                   False otherwise.
         """
-        ask_again = self._point_to_prompt("Would you like to play again? (y/n) ")
+        ask_again = self.point_to_prompt   ("Would you like to play again? (y/n) ")
         answer = input(ask_again)
         return answer.lower().startswith('y')
 
     def _save_choices(self):
-        self._saved_moves[self._human.move.name] = self._computer.move.name
+        self._saved_moves.append(
+            (self._human.move.name, self._computer.move.name)
+            )
 
     def return_saved_moves(self):
         """
         Prints the saved moves from the game.
         """
-        for rounds, (play_choice, comp_choice) in enumerate(self._saved_moves.items(), start=1):
+        for rounds, (play_choice, comp_choice) in enumerate(self._saved_moves, start=1):
             print(f'Round {rounds}:')
-            print(self._point_to_prompt(f'You chose {play_choice}'))
-            print(self._point_to_prompt(f'The computer chose {comp_choice}'))
+            print(self.point_to_prompt (f'You chose {play_choice}'))
+            print(self.point_to_prompt (f'The computer chose {comp_choice}'))
 
     def _choose_computer_strategy(self):
         """
@@ -137,7 +144,7 @@ class RPSGame:
 
         choice = input("Enter your choice (1-4): ")
         if choice in {'1', '2', '3', '4'}:
-            self._computer.strategy = RPSGame.COMPUTER_STRATEGIES[int(choice) - 1]
+            self._computer.strategy = COMPUTER_STRATEGIES[int(choice) - 1]
         else:
             print("Invalid choice, defaulting to 'Random'.")
             self._computer.strategy = 'random'
@@ -158,13 +165,13 @@ class RPSGame:
         self._choose_computer_strategy()
         print(f'You are playing against {self._computer.strategy}')
         self._computer = Computer(self._computer.strategy)
-        self._computer._set_human(self._human)
-            
+        self._computer.set_human(self._human)
+
         while True:
-            
+
             self._human.choose()
             self._computer.choose()
-            self._computer._previous_human_move = self._human.move
+            self._computer.previous_human_move = self._human.move
             self._save_choices()
 
 

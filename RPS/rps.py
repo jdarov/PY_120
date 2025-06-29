@@ -99,9 +99,12 @@ class Computer(Player):
     """
 
     def __init__(self, computer_name='random'):
+        super().__init__()
         self._computer_name = computer_name
         self._first_turn = True
-        self._previous_human_move = None
+        self._human = None
+
+        self.previous_human_move = None
 
         self._strategy = {
             'random': self.choose_random,
@@ -112,10 +115,13 @@ class Computer(Player):
         if self._computer_name not in self._strategy:
             raise ValueError(f"Unknown computer type: {self._computer_name}. "
                              "Valid types are: 'random', 'r2d2', 'HAL', 'Daneel'.")
-        
+
         self._choose = self._strategy[self._computer_name]
 
-    def _set_human(self, human_player):
+    def set_human(self, human_player):
+        """
+        Sets the human player for the computer to reference.
+        """
         self._human = human_player
 
     def choose_random(self):
@@ -125,13 +131,13 @@ class Computer(Player):
         """
         choice = random.choice(Player.VALID_CHOICES)
         self.move = Move.move_class(choice)
-    
+
     def choose_r2d2(self):
         """
         R2D2's strategy: always chooses 'rock'.
         """
         self.move = Move.move_class('rock')
-    
+
     def choose_hal(self):
         """
         HAL's strategy: choose scissors about 2/3 of the time
@@ -155,7 +161,7 @@ class Computer(Player):
             self._first_turn = False
         else:
             # If a human player is set and has made a move, use that move.
-            self.move = Move.move_class(self._previous_human_move.name)
+            self.move = Move.move_class(self.previous_human_move.name)
     def choose(self):
         """
         Overrides the choose method from Player class.
