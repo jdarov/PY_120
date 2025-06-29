@@ -11,6 +11,7 @@ If the players choose the same move, then it's a tie.
 import os
 import time
 from rps import Computer, Human
+from rules_mixin import RulesMixIN
 
 GRAND_WINNER = "You are the GRAND WINNER! Congratulations!"
 GRAND_LOSER = "The computer is the GRAND WINNER! Better luck next time!"
@@ -18,7 +19,7 @@ FINAL_SCORE = 5  # The score needed to win the game
 
 COMPUTER_STRATEGIES = ['random', 'r2d2', 'hal', 'daneel']
 
-class RPSGame:
+class RPSGame(RulesMixIN):
 
     """
     Manages a single round of Rock Paper Scissors 
@@ -161,6 +162,7 @@ class RPSGame:
         - Says goodbye when the player exits.
         """
         self._display_welcome_message()
+        self._display_rules()
 
         self._choose_computer_strategy()
         print(f'You are playing against {self._computer.strategy}')
