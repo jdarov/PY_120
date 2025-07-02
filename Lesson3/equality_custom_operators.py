@@ -1,36 +1,81 @@
-class Silly:
-    def __init__(self, value):
-        if isinstance(value, int):
-            self.value = value
-        else:
-            self.value = str(value)
+import math
 
-    def __str__(self):
-        return f'Silly({repr(self.value)})'
-    
-    def __add__(self, other):
-        # Convert other to a string or int depending on context
-        if isinstance(self.value, str) and not self.value.isdigit():
-            # Treat self as a string, concatenate
-            return Silly(str(self.value) + str(other))
-        
-        if isinstance(other, Silly):
-            other_val = other.value
-        else:
-            other_val = other
-        
-        # Now we check if both are digit strings or integers
-        try:
-            result = int(self.value) + int(other_val)
-            return Silly(result)
-        except ValueError:
-            return Silly(str(self.value) + str(other_val))
-        
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
 
-print(Silly('abc') + 'def')        # Silly('abcdef')
-print(Silly('abc') + 123)          # Silly('abc123')
-print(Silly(123) + 'xyz')          # Silly('123xyz')
-print(Silly('333') + 123)          # Silly(456)
-print(Silly(123) + '222')          # Silly(345)
-print(Silly(123) + 456)            # Silly(579)
-print(Silly('123') + '456')        # Silly(579)
+    @property
+    def radius(self):
+        return self._radius
+
+    @radius.setter
+    def radius(self, value):
+        if value < 0:
+            raise ValueError("Radius cannot be negative.")
+        self._radius = value
+
+    @property
+    def diameter(self):
+        return 2 * self.radius
+
+    @diameter.setter
+    def diameter(self, diameter):
+        self.radius = diameter / 2
+
+    @property
+    def circumference(self):
+        return 2 * math.pi * self.radius
+
+    @circumference.setter
+    def circumference(self, circumference):
+        self.radius = circumference / (2 * math.pi)
+
+    @property
+    def area(self):
+        return math.pi * (self.radius ** 2)
+
+    @area.setter
+    def area(self, area):
+        self.radius = math.sqrt(area / math.pi)
+
+    def print(self):
+        print(f'{self.radius=}')
+        print(f'{self.diameter=}')
+        print(f'{self.circumference=}')
+        print(f'{self.area=}')
+        print()
+
+circle = Circle(10)
+circle.print()
+# self.radius=10
+# self.diameter=20
+# self.circumference=62.83185307179586
+# self.area=314.1592653589793
+
+circle.radius = 5
+circle.print()
+# self.radius=5
+# self.diameter=10
+# self.circumference=31.41592653589793
+# self.area=78.53981633974483
+
+circle.diameter = 15
+circle.print()
+# self.radius=7.5
+# self.diameter=15.0
+# self.circumference=47.12388980384689
+# self.area=176.71458676442586
+
+circle.circumference = 30
+circle.print()
+# self.radius=4.7746482927568605
+# self.diameter=9.549296585513721
+# self.circumference=30.0
+# self.area=71.61972439135292
+
+circle.area = 50
+circle.print()
+# self.radius=3.989422804014327
+# self.diameter=7.978845608028654
+# self.circumference=25.066282746310005
+# self.area=50.0
