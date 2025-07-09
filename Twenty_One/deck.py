@@ -54,14 +54,14 @@ class Deck:
 
     def __init__(self):
         self._deck = [Card(rank, suit) for rank in self.RANKS for suit in self.SUITS]
-        self._deck = self.shuffle_cards()
+        self.shuffle_cards()
 
     def shuffle_cards(self):
         random.shuffle(self._deck)
-        return self._deck
     
     def draw(self):
-        if self._deck:
-            return self._deck.pop()
-        print("The deck is empty and you need to reshuffle a new deck")
-        return None
+        if not self._deck:
+            print("Deck is empty. Reshuffling a new deck...")
+            self._deck = [Card(rank, suit) for rank in self.RANKS for suit in self.SUITS]
+            self.shuffle_cards()
+        return self._deck.pop()

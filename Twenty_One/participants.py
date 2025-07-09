@@ -50,7 +50,7 @@ class Participant:
     def __lt__(self, other):
         return self._hand_total() < other._hand_total()
     def __le__(self, other):
-        return self._hand_total <= other._hand_total()
+        return self._hand_total() <= other._hand_total()
     
     def __eq__(self, other):
         return self._hand_total() == other._hand_total()
